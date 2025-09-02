@@ -3,6 +3,7 @@ import { FaRegEye, FaRegEyeSlash } from 'react-icons/fa';
 
 interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   label: string;
+  error?: string;
 }
 
 export const Input = forwardRef<HTMLInputElement, InputProps>((props, ref) => {
@@ -44,6 +45,9 @@ export const Input = forwardRef<HTMLInputElement, InputProps>((props, ref) => {
           </>
         )}
       </div>
+      {props.error && (
+        <p className='text-red-500 text-xs pb-2.5'>{props.error}</p>
+      )}
     </div>
   );
 });

@@ -21,10 +21,6 @@ export const useLoginForm = (): UseLoginReturn => {
     console.log(values);
   };
 
-  const handleOnChange = (k: keyof LoginSchemaType, value: string) => {
-    form.setValue(k, value);
-  };
-
   return {
     form,
     onSubmit: form.handleSubmit(onSubmit),

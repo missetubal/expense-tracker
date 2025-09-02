@@ -1,5 +1,5 @@
-import React from 'react';
+import { SignUpPage } from '../../features';
 
 export const Signup = () => {
-  return <div>Signup</div>;
+  return <SignUpPage />;
 };

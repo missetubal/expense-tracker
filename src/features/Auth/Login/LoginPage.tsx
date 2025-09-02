@@ -1,5 +1,6 @@
-import { AuthLayout } from '../../components';
-import { LoginForm } from './components/login-form/LoginForm';
+import { Link } from 'react-router-dom';
+import { AuthLayout } from '../../../components';
+import { LoginForm } from './login-form/LoginForm';
 
 export const LoginPage = () => {
   return (
@@ -10,6 +11,12 @@ export const LoginPage = () => {
           Please enter your login details to log in
         </p>
         <LoginForm />
+        <p className='text-sm text-slate-800 mt-3'>
+          Dont have an accout yet?{' '}
+          <Link className='font-medium text-primary underline' to='/signup'>
+            SignUp
+          </Link>
+        </p>
       </div>
     </AuthLayout>
   );
