@@ -3,7 +3,7 @@ import { z } from 'zod';
 export const getSignUpSchema = (/**TODO: implementar i18n */) =>
   z
     .object({
-      name: z.string(),
+      name: z.string().min(3),
       email: z
         .string()
         .email({
