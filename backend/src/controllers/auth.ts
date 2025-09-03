@@ -1,9 +1,7 @@
 import { Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
 import { IUser } from '../models/User';
-
-// export const useAuth = () => {
-const User = require('../models/User');
+import User from '../models/User';
 
 export const generateToken = (id: string) => {
   return jwt.sign({ id }, process.env.JWT_SECRET!, { expiresIn: '1h' });
@@ -22,7 +20,7 @@ export const registerUser = async (req: Request, res: Response) => {
       return res.status(400).json({ message: 'Email already in use' });
     }
 
-    const user = await User.create({
+    const user: IUser = await User.create({
       fullName,
       email,
       password,
@@ -32,7 +30,7 @@ export const registerUser = async (req: Request, res: Response) => {
     res.status(200).json({
       id: user._id,
       user,
-      token: generateToken(user._id),
+      token: generateToken(user._id as string),
     });
   } catch (err) {
     console.error(err);
@@ -48,13 +46,13 @@ export const loginUser = async (req: Request, res: Response) => {
   }
 
   try {
-    const user = await User.findOne({ email });
+    const user: IUser | null = await User.findOne({ email });
     if (!user || !(await user.comparePassword(password))) {
       return res.status(400).json({ message: 'Invalid credentials' });
     }
     res.status(200).json({
       id: user._id,
-      token: generateToken(user._id),
+      token: generateToken(user._id as string),
     });
   } catch (err) {
     console.error(err);
@@ -64,7 +62,9 @@ export const loginUser = async (req: Request, res: Response) => {
 
 export const getUserInfo = async (req: Request, res: Response) => {
   try {
-    const user: IUser = await User.findById(req.user?.id).select('-password');
+    const user: IUser | null = await User.findById(req.user?.id).select(
+      '-password'
+    );
 
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
@@ -78,10 +78,3 @@ export const getUserInfo = async (req: Request, res: Response) => {
       .json({ message: 'Error getting user information', error: err });
   }
 };
-
-// return {
-//   generateToken,
-//   registerUser,
-//   loginUser,
-// };
-// };
