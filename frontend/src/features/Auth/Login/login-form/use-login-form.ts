@@ -1,6 +1,7 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm, type UseFormReturn } from 'react-hook-form';
 import { getLoginSchema, type LoginSchemaType } from './schema';
+import { useAuth } from '../../../../hooks/useAuth';
 
 interface UseLoginReturn {
   form: UseFormReturn<LoginSchemaType>;
@@ -8,6 +9,7 @@ interface UseLoginReturn {
 }
 
 export const useLoginForm = (): UseLoginReturn => {
+  const { login } = useAuth();
   const form = useForm<LoginSchemaType>({
     mode: 'onChange',
     resolver: zodResolver(getLoginSchema()),
@@ -18,7 +20,11 @@ export const useLoginForm = (): UseLoginReturn => {
   });
 
   const onSubmit = (values: LoginSchemaType) => {
-    console.log(values);
+    try {
+      login({ email: values.email, password: values.password });
+    } catch (err) {
+      console.error(err);
+    }
   };
 
   return {
