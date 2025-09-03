@@ -3,7 +3,12 @@ import express from 'express';
 import cors from 'cors';
 import path from 'path';
 import { connectDB } from './config/db';
-import { authRouter, expenseRouter, incomeRouter } from './routes';
+import {
+  authRouter,
+  dashboardRouter,
+  expenseRouter,
+  incomeRouter,
+} from './routes';
 
 const app = express();
 const port = process.env.PORT || 5000;
@@ -23,6 +28,7 @@ connectDB();
 app.use('/api/v1/auth', authRouter);
 app.use('/api/v1/income', incomeRouter);
 app.use('/api/v1/expense', expenseRouter);
+app.use('/api/v1/dashboard', dashboardRouter);
 
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 

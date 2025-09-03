@@ -1,3 +1,4 @@
 export * from './auth';
-export * from './income';
+export * from './dashboard';
 export * from './expense';
+export * from './income';
