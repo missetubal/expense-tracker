@@ -1,0 +1,24 @@
+meta {
+  name: RegisterUser
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{BASE_URL}}/api/v1/auth/register
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "fullName":"Usuário Teste",
+    "password": "test@123",
+    "email": "teste@test.com",
+    "profileImageUrl": ""
+  }
+}
+
+settings {
+  encodeUrl: true
+}
