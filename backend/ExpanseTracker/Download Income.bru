@@ -1,0 +1,28 @@
+meta {
+  name: Download Income
+  type: http
+  seq: 8
+}
+
+get {
+  url: {{BASE_URL}}/api/v1/income/download-excel
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{authToken}}
+}
+
+body:json {
+  {
+    "icon": "Test",
+    "source": "Salary",
+    "amount": 200,
+    "date": "04/23/2023"
+  }
+}
+
+settings {
+  encodeUrl: true
+}

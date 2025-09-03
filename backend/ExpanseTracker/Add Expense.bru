@@ -1,0 +1,29 @@
+meta {
+  name: Add Expense
+  type: http
+  seq: 9
+}
+
+post {
+  url: {{BASE_URL}}/api/v1/expense/add
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{authToken}}
+}
+
+body:json {
+  {
+    "icon":"Food",
+    "category": "Food",
+    "description": "Sushi",
+    "amount": 200,
+    "date": "06/23/2023"
+  }
+}
+
+settings {
+  encodeUrl: true
+}

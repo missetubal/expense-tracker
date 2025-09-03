@@ -1,0 +1,25 @@
+meta {
+  name: Get User Info
+  type: http
+  seq: 4
+}
+
+get {
+  url: {{BASE_URL}}/api/v1/auth/user
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{authToken}}
+}
+
+body:json {
+  {
+    "token": "yJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4Yjc4Njg4NzU4ODkyNDllODQ5MzdmNiIsImlhdCI6MTc1NjkwMDY4OSwiZXhwIjoxNzU2OTA0Mjg5fQ.WRrq8Ftxs2f2QubvdLv0VixspFpqpoug0VCusfb0snQ"
+  }
+}
+
+settings {
+  encodeUrl: true
+}
