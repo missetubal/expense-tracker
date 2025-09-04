@@ -1,13 +1,15 @@
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import axios, { AxiosError } from 'axios';
 import axiosInstance from '../utils/api';
 import { API_PATHS } from '../constants/api';
 import { useNavigate } from 'react-router-dom';
 import type { AuthHook, AuthResponse, LoginData, User } from '../types/auth';
+import { UserContext } from '../context/user-context';
 
 export const useAuth = (): AuthHook => {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
+  const { updateUser, clearUser } = useContext(UserContext);
   const navigate = useNavigate();
 
   const login = async (data: LoginData) => {
@@ -18,8 +20,11 @@ export const useAuth = (): AuthHook => {
         API_PATHS.AUTH.LOGIN,
         data
       );
-      const { token } = response.data;
+      const { token, user } = response.data;
       localStorage.setItem('token', token);
+
+      updateUser(user);
+
       navigate('/dashboard');
     } catch (err) {
       if (axios.isAxiosError(err)) {
@@ -63,6 +68,7 @@ export const useAuth = (): AuthHook => {
   };
 
   const logout = () => {
+    clearUser();
     localStorage.removeItem('token');
     navigate('/login');
   };
