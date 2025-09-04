@@ -1,10 +1,12 @@
 import { Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
 import { IUser } from '../models/User';
-import User from '../models/User';
+import { User } from '../models/User';
 
 export const generateToken = (id: string) => {
-  return jwt.sign({ id }, process.env.JWT_SECRET!, { expiresIn: '1h' });
+  return jwt.sign({ id }, process.env.JWT_SECRET || 'secret', {
+    expiresIn: '1h',
+  });
 };
 
 export const registerUser = async (req: Request, res: Response) => {
@@ -47,7 +49,7 @@ export const loginUser = async (req: Request, res: Response) => {
 
   try {
     const user: IUser | null = await User.findOne({ email });
-    if (!user || !(await user.comparePassword(password))) {
+    if (!user || !(await User.schema.methods.comparePassword(password))) {
       return res.status(400).json({ message: 'Invalid credentials' });
     }
     res.status(200).json({
@@ -55,24 +57,24 @@ export const loginUser = async (req: Request, res: Response) => {
       token: generateToken(user._id as string),
     });
   } catch (err) {
-    console.error(err);
     res.status(500).json({ message: 'Error logging user', error: err });
   }
 };
 
 export const getUserInfo = async (req: Request, res: Response) => {
   try {
-    const user: IUser | null = await User.findById(req.user?.id).select(
-      '-password'
-    );
-
+    const user: IUser | null = await User.findById(req.user?.id);
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
     }
 
-    res.status(200).json(user);
+    res.status(200).json({
+      id: user._id,
+      fullName: user.fullName,
+      email: user.email,
+      profileImageUrl: user.profileImageUrl,
+    });
   } catch (err) {
-    console.error(err);
     res
       .status(500)
       .json({ message: 'Error getting user information', error: err });

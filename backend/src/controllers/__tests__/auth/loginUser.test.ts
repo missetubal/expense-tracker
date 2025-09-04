@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
-import { User } from '../../../models/User';
-import { registerUser } from '../../auth';
+import { User, IUser } from '../../../models/User';
+import { loginUser, registerUser } from '../../auth';
 
 // Mock the User model
 jest.mock('../../../models/User');
@@ -11,7 +11,7 @@ jest.mock('../../auth', () => ({
   generateToken: jest.fn(() => 'mocked-token'),
 }));
 
-describe('registerUser', () => {
+describe('loginUser', () => {
   let req: Partial<Request>;
   let res: Partial<Response>;
   let json: jest.Mock;
@@ -20,10 +20,8 @@ describe('registerUser', () => {
   beforeEach(() => {
     req = {
       body: {
-        fullName: 'Test User',
         email: 'test@example.com',
         password: 'password123',
-        profileImageUrl: undefined,
       },
     };
     json = jest.fn();
@@ -35,9 +33,8 @@ describe('registerUser', () => {
     jest.clearAllMocks();
   });
 
-  it('should register a new user successfully', async () => {
-    (User.findOne as jest.Mock).mockResolvedValue(null);
-    (User.create as jest.Mock).mockResolvedValue({
+  it('should login a user successfully', async () => {
+    (User.findOne as jest.Mock).mockResolvedValue({
       _id: 'user-id',
       fullName: 'Test User',
       email: 'test@example.com',
@@ -45,46 +42,43 @@ describe('registerUser', () => {
       profileImageUrl: undefined,
     });
 
-    await registerUser(req as Request, res as Response);
+    (User.schema.methods.comparePassword as jest.Mock).mockResolvedValue(true);
 
-    expect(User.findOne).toHaveBeenCalledWith({ email: 'test@example.com' });
-    expect(User.create).toHaveBeenCalledWith({
-      fullName: 'Test User',
+    await loginUser(req as Request, res as Response);
+
+    expect(User.findOne).toHaveBeenCalledWith({
       email: 'test@example.com',
-      password: 'password123',
-      profileImageUrl: undefined,
     });
+
     expect(status).toHaveBeenCalledWith(200);
   });
 
   it('should return 400 if required fields are missing', async () => {
     req.body = {};
-    await registerUser(req as Request, res as Response);
+    await loginUser(req as Request, res as Response);
 
     expect(status).toHaveBeenCalledWith(400);
     expect(json).toHaveBeenCalledWith({ message: 'All fields are required' });
   });
 
-  it('should return 400 if email is already in use', async () => {
-    (User.findOne as jest.Mock).mockResolvedValue({
-      email: 'test@example.com',
-    });
+  it('should return 400 if email is not registered', async () => {
+    (User.findOne as jest.Mock).mockResolvedValue(null);
 
-    await registerUser(req as Request, res as Response);
+    await loginUser(req as Request, res as Response);
 
     expect(status).toHaveBeenCalledWith(400);
-    expect(json).toHaveBeenCalledWith({ message: 'Email already in use' });
+    expect(json).toHaveBeenCalledWith({ message: 'Invalid credentials' });
   });
 
   it('should return 500 if there is a server error', async () => {
     const error = new Error('Something went wrong');
     (User.findOne as jest.Mock).mockRejectedValue(error);
 
-    await registerUser(req as Request, res as Response);
+    await loginUser(req as Request, res as Response);
 
     expect(status).toHaveBeenCalledWith(500);
     expect(json).toHaveBeenCalledWith({
-      message: 'Error registering user',
+      message: 'Error logging user',
       error: error,
     });
   });
