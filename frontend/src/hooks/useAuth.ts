@@ -49,8 +49,11 @@ export const useAuth = (): AuthHook => {
         API_PATHS.AUTH.REGISTER,
         data
       );
-      const { token } = response.data;
+      const { token, user } = response.data;
       localStorage.setItem('token', token);
+
+      updateUser(user);
+
       navigate('/dashboard');
     } catch (err) {
       if (axios.isAxiosError(err)) {
