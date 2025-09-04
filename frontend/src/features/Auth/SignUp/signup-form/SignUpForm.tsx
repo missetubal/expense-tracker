@@ -1,4 +1,4 @@
-import { Input } from '../../../../components';
+import { Input, ProfilePhotoSelector } from '../../../../components';
 import { useSignUpForm } from './use-signup-form';
 
 export const SignUpForm = () => {
@@ -6,6 +6,11 @@ export const SignUpForm = () => {
 
   return (
     <form onSubmit={onSubmit} className='flex flex-col gap-4'>
+      <ProfilePhotoSelector
+        onChange={(file) => {
+          form.setValue('photo', file);
+        }}
+      />
       <Input
         id='name'
         label='Name'

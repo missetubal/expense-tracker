@@ -4,6 +4,7 @@ export const getSignUpSchema = (/**TODO: implementar i18n */) =>
   z
     .object({
       name: z.string().min(3),
+      photo: z.any().optional(),
       email: z
         .string()
         .email({

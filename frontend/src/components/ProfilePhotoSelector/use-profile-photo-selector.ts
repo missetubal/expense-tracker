@@ -9,7 +9,11 @@ interface UseProfilePhotoSelctorReturn {
   image: File | null;
 }
 
-export const useProfilePhotoSelector = (): UseProfilePhotoSelctorReturn => {
+interface UseProfilePhotoSelectorProps {
+  onChange: (file: File | null) => void;
+}
+
+export const useProfilePhotoSelector = ({ onChange }: UseProfilePhotoSelectorProps): UseProfilePhotoSelctorReturn => {
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [image, setImage] = useState<File | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -18,7 +22,7 @@ export const useProfilePhotoSelector = (): UseProfilePhotoSelctorReturn => {
     const file = event.target.files![0];
     if (file) {
       setImage(file);
-
+      onChange(file);
       const preview = URL.createObjectURL(file);
       setPreviewUrl(preview);
     }
@@ -28,6 +32,7 @@ export const useProfilePhotoSelector = (): UseProfilePhotoSelctorReturn => {
   const handleRemove = () => {
     setImage(null);
     setPreviewUrl(null);
+    onChange(null);
   };
 
   const onChooseFile = () => {

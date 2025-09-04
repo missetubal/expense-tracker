@@ -1,13 +1,18 @@
 import { useProfilePhotoSelector } from './use-profile-photo-selector';
 import { LuTrash, LuUpload, LuUser } from 'react-icons/lu';
-export const ProfilePhotoSelector = () => {
+
+interface ProfilePhotoSelectorProps {
+  onChange: (file: File | null) => void;
+}
+
+export const ProfilePhotoSelector = ({ onChange }: ProfilePhotoSelectorProps) => {
   const {
     inputRef,
     handleImageChange,
     previewUrl,
     handleRemove,
     onChooseFile,
-  } = useProfilePhotoSelector();
+  } = useProfilePhotoSelector({ onChange });
   return (
     <div className='flex justify-center mb-6'>
       <input
