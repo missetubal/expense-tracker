@@ -72,7 +72,7 @@ export const deleteIncome = async (req: Request, res: Response) => {
       return res.status(404).json({ message: 'Income not found' });
     }
 
-    res.json({ message: 'Income deleted successfuly' });
+    res.status(200).json({ message: 'Income deleted successfully' });
   } catch (err) {
     res.status(500).json({ message: 'Server Error' });
   }
