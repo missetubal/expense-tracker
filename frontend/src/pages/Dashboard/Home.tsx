@@ -1,9 +1,5 @@
-import React from 'react';
+import { HomePage } from '../../features';
 
 export const Home = () => {
-  return (
-    <div>
-      <p>das</p>
-    </div>
-  );
+  return <HomePage />;
 };
